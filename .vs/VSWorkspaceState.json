@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\FoodApplication",
+    "\\FoodApplication\\ContextDBConfig",
+    "\\FoodApplication\\Controllers",
+    "\\FoodApplication\\Migrations",
+    "\\FoodApplication\\Views",
+    "\\FoodApplication\\Views\\Account"
+  ],
+  "PreviewInSolutionExplorer": false
+}
