@@ -81,3 +81,17 @@ header{
 .fa-minus {
     cursor: pointer;
 }
+#totalAmount, #price {
+    width: 60px;
+    border: none;
+}
+    #totalAmount:focus, #price:focus{
+        outline: none;
+    }
+.addToCartIcon{
+    cursor:pointer;
+}
+.bg-black{
+    background-color:#0d243d;
+}
+

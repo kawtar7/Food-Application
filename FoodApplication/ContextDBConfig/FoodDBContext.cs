@@ -13,5 +13,6 @@ namespace FoodApplication.ContextDBConfig
             base.OnModelCreating(builder);
         }
         public DbSet<Order> orders { get; set; }
+        public DbSet<Cart> carts { get; set; }
     }
 }

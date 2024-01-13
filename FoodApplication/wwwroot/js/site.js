@@ -22,6 +22,7 @@ function showRecipes(recipes, id) {
         data: JSON.stringify(recipes),
         success: function (htmlResult) {
             $('#' + id).html(htmlResult);
+            getAddedCarts();
         }
     })
 }
@@ -49,10 +50,67 @@ function showOrderRecipeDetails(orderRecipeDetails, showId) {
 // OrderPage
 function quantity(option) {
     let qty = $('#qty').val();
+    let price = parseInt($('#price').val());
+    let totalAmount = 0;
     if (option === 'inc') {
-        qty = parseInt(qty)+ 1;
+        qty = parseInt(qty) + 1;
+       
     } else {
         qty = qty == 1 ? qty : qty - 1;
     }
+    totalAmount = price * qty;
     $('#qty').val(qty);
+    ($('#totalAmount').val(totalAmount))
+}
+//add to cart
+async function cart() {
+    let iTag = $(this).children('i')[0];
+    let recipeId = $(this).attr('data-recipeId');
+    if ($(iTag).hasClass('fa-regular')) {
+        let resp = await fetch(`${apiURL}/${recipeId}?key=${apiKey}`);
+        let result = await resp.json();
+        let cart = result.data.recipe;
+        cart.RecipeId = recipeId;
+        delete cart.id;
+        cartRequest(cart, 'SaveCart', 'fa-solid', 'fa-regular', iTag);
+    } else {
+
+    }
+}
+function cartRequest(data,action,addcls,removecls,iTag) {
+    $.ajax({
+        url: '/Cart/' + action,
+        type: 'POST',
+        data: data,
+        success: function (resp) {
+            $(iTag).addClass(addcls);
+            $(iTag).removeClass(removecls);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    })
+}
+function getAddedCarts() {
+    $.ajax({
+        url: '/Cart/GetAddedCarts',
+        type: 'GET',
+        datatype: 'json',
+        success: function (result) {
+            $('.addToCartIcon').each((index, spanTag) => {
+                let recipeId = $(spanTag).attr("data-recipeId");
+                for (var i = 0; i < result.length; i++) {
+                    if (recipeId == result[i]) {
+                        let itag = $(spanTag).children('i')[0];
+                        $(itag).addClass('fa-solid');
+                        $(itag).removeClass('fa-regular');
+                        break;
+                    }
+                }
+            })
+        },
+        error: function (err) {
+
+        }
+    })
 }
