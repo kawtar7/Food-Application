@@ -17,9 +17,11 @@ namespace FoodApplication.Controllers
             this.data = data;
             this.context = context;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var user = await data.GetUser(HttpContext.User);
+            var cartList=context.carts.Where(c=>c.UserId==user.Id).ToList();
+            return View(cartList);
         }
         [HttpPost]
         public async Task<IActionResult> SaveCart(Cart cart)
@@ -40,6 +42,31 @@ namespace FoodApplication.Controllers
             var user=await data.GetUser(HttpContext.User);
             var carts = context.carts.Where(c => c.UserId == user.Id).Select(c=>c.RecipeId).ToList();
             return Ok(carts);
+        }
+        [HttpPost]
+        public IActionResult RemoveCartFromList(string Id)
+        {
+            if(!string.IsNullOrEmpty(Id))
+            {
+                var cart=context.carts.Where(c=>c.RecipeId == Id).FirstOrDefault();
+                if(cart != null)
+                {
+                    context.carts.Remove(cart);
+                    context.SaveChanges();
+                    return Ok();
+                }
+                 
+            }
+           
+            return BadRequest();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCartList()
+        {
+            var user = await data.GetUser(HttpContext.User);
+            var cartList = context.carts.Where(c => c.UserId == user.Id).Take(3).ToList();
+            return PartialView("CartList", cartList);
+
         }
     }
 }
